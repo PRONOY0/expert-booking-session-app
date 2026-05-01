@@ -45,8 +45,8 @@ PORT=8000
 
 ## Live Demo
 
-Frontend: your_frontend_url
-Backend: your_backend_url
+Frontend: https://expert-booking-session-app-1.onrender.com
+Backend: https://expert-booking-session-app.onrender.com
 
 ## Note
 
