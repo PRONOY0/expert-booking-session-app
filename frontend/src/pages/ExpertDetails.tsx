@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import { socket } from "../socket/socket";
 import SlotButton from "../components/SlotButton";
+import toast from "react-hot-toast";
 
 interface Expert {
     _id: string;
@@ -55,7 +56,9 @@ export default function ExpertDetail() {
                 setExpert(data.expert);
                 setSlots(data.slots || {});
             } catch (err: any) {
-                setError(err.response?.data?.message || err.message || "Failed to load expert");
+                const msg = err.response?.data?.message || err.message || "Failed to load expert";
+                setError(msg);
+                toast.error(msg);
             } finally {
                 setLoading(false);
             }

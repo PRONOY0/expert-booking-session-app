@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import api from "../api/axios";
 import ExpertCard from "../components/ExpertCard";
+import toast from "react-hot-toast";
 
 const CATEGORIES = ["All", "Finance", "Health", "Tech", "Legal"];
 
@@ -42,7 +43,7 @@ export default function ExpertList() {
                 };
 
                 if (category !== "All") params.category = category;
-                if (submittedSearch) params.name = submittedSearch; 
+                if (submittedSearch) params.name = submittedSearch;
 
                 const response = await api.get("/experts", { params });
 
@@ -53,19 +54,21 @@ export default function ExpertList() {
                     setExperts([]);
                 }
             } catch (err: any) {
-                setError(err.response?.data?.message || err.message || "Failed to load experts");
+                const msg = err.response?.data?.message || err.message || "Failed to load experts";
+                setError(msg);
+                toast.error(msg);
             } finally {
                 setLoading(false);
             }
         };
 
         fetchExperts();
-    }, [page, category, submittedSearch]); 
+    }, [page, category, submittedSearch]);
 
     const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setPage(1);
-        setSubmittedSearch(search); 
+        setSubmittedSearch(search);
     };
 
     return (

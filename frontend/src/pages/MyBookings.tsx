@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import api from "../api/axios";
+import toast from "react-hot-toast";
 
 type BookingStatus = "PENDING" | "CONFIRMED" | "COMPLETED";
 
@@ -25,8 +26,8 @@ interface Booking {
   phone: string;
   notes?: string;
   status: BookingStatus;
-  expertId: PopulatedExpert;  
-  slotId: PopulatedSlot;      
+  expertId: PopulatedExpert;
+  slotId: PopulatedSlot;
   createdAt: string;
 }
 
@@ -61,14 +62,19 @@ export default function MyBookings() {
     try {
       const response = await api.get("/bookings", { params: { email } });
 
-      
+
       if (response.data && response.data.bookings) {
         setBookings(response.data.bookings);
+        if (response.data.bookings.length > 0) {
+          toast.success(`Found ${response.data.bookings.length} booking(s)`);
+        }
       } else {
         setBookings([]);
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || err.message || "Failed to fetch bookings");
+      const msg = err.response?.data?.message || err.message || "Failed to fetch bookings";
+      setError(msg);
+      toast.error(msg);
       setBookings([]);
     } finally {
       setLoading(false);
@@ -123,16 +129,16 @@ export default function MyBookings() {
         <div className="bg-white border text-sm border-gray-200 rounded-sm">
           <ul className="divide-y divide-gray-200">
             {bookings.map((booking) => {
-              
+
               const slot = booking.slotId;
               const expert = booking.expertId;
 
               const displayDate = slot?.date
                 ? new Date(slot.date).toLocaleDateString(undefined, {
-                    weekday: "short",
-                    month: "short",
-                    day: "numeric",
-                  })
+                  weekday: "short",
+                  month: "short",
+                  day: "numeric",
+                })
                 : "Date TBA";
 
               const displayTime = slot?.startTime || "Time TBA";
